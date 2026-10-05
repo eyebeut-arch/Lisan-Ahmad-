@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>Lisaan Ahmad — لِسَان أَحْمَد</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--txt:#172033;--muted:#667085;--a:#6d28d9;--line:#e5e7eb}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+header{position:sticky;top:0;z-index:5;background:#111827;color:#fff;padding:14px 16px;box-shadow:0 3px 15px #0003}
+.brand{font-weight:800;font-size:19px}.brand small{display:block;color:#cbd5e1;font-size:11px}
+main{max-width:900px;margin:auto;padding:14px 12px 90px}
+.hero{background:linear-gradient(135deg,#111827,#4c1d95);color:white;border-radius:22px;padding:22px;margin-bottom:14px}
+.hero h1{margin:0 0 7px;font-size:27px}.hero p{margin:6px 0;color:#e9d5ff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:10px;box-shadow:0 5px 16px #1018280a}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+button,.btn{border:0;border-radius:11px;padding:11px 14px;font-weight:700;background:var(--a);color:#fff;cursor:pointer}
+.secondary{background:#ede9fe!important;color:#5b21b6!important}.ghost{background:#f2f4f7!important;color:#344054!important}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d9dee8;border-radius:11px;font:inherit;background:#fff}
+label{display:block;font-size:13px;font-weight:700;margin:11px 0 6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.pill{padding:5px 9px;border-radius:99px;background:#ede9fe;color:#5b21b6;font-size:12px;font-weight:800}
+.rtl{direction:rtl;text-align:right;font-family:serif;font-size:25px;line-height:1.7}
+.chat{display:flex;flex-direction:column;gap:9px}.msg{padding:13px 15px;border-radius:16px;max-width:92%;background:#fff;border:1px solid var(--line)}
+.msg.me{align-self:flex-end;background:#ede9fe}.msg.tutor{align-self:flex-start}
+.theme{cursor:pointer}.theme:hover{border-color:#a78bfa}.muted,small{color:var(--muted)}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:10;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center}
+nav button{flex:1;max-width:180px;background:none;color:#667085;padding:9px 4px;font-size:12px;border-radius:0}
+nav button.active{color:var(--a);font-weight:800}
+.toast{display:none;position:fixed;top:70px;right:10px;z-index:20;background:#111827;color:#fff;padding:11px 14px;border-radius:10px}
+</style>
+</head>
+<body>
+<header><div class="brand">لِسَان أَحْمَد — Lisaan Ahmad<small>Professeur personnel de conversation arabe</small></div></header>
+<main id="app"></main>
+<nav>
+<button id="n-home" onclick="show('home')">🏠<br>Accueil</button>
+<button id="n-tutor" onclick="show('tutor')">💬<br>Tuteur</button>
+<button id="n-themes" onclick="show('themes')">📚<br>Thèmes</button>
+<button id="n-review" onclick="show('review')">🧠<br>Révision</button>
+<button id="n-settings" onclick="show('settings')">⚙️<br>Réglages</button>
+</nav><div id="toast" class="toast"></div>
+<script>
+const KEY="lisaan-ahmad-v1";
+const themes=[
+["Salutations","التحيات"],["Se présenter","التعريف بالنفس"],["La famille","العائلة"],["La maison","البيت"],["La ville","المدينة"],["Le marché","السوق"],["Les achats","التسوّق"],["Le travail","العمل"],["Les études","الدراسة"],["Le voyage","السفر"],["Le restaurant","المطعم"],["La nourriture","الطعام"],["La santé","الصحة"],["Le temps","الوقت"],["La météo","الطقس"],["Les transports","المواصلات"],["Les amis","الأصدقاء"],["La routine","الروتين اليومي"],["Les loisirs","الهوايات"],["Les émotions","المشاعر"],["La mosquée","المسجد"],["Le Ramadan","رمضان"],["Les fêtes","الأعياد"],["Le commerce","التجارة"],["La technologie","التكنولوجيا"],["Les projets","المشاريع"],["L’administration","الإدارة"],["L’hôtel","الفندق"],["L’aéroport","المطار"],["La conversation","المحادثة"],["Les vêtements","الملابس"],["La nature","الطبيعة"],["Le sport","الرياضة"],["La cuisine","الطبخ"],["Les médias","الإعلام"],["La culture","الثقافة"],["L’histoire","التاريخ"],["La géographie","الجغرافيا"],["Les services","الخدمات"],["La banque","البنك"],["Le téléphone","الهاتف"],["Internet","الإنترنت"],["Les rendez-vous","المواعيد"],["Les invitations","الدعوات"],["Demander son chemin","السؤال عن الطريق"],["Donner son opinion","إبداء الرأي"],["Raconter sa journée","وصف اليوم"],["Faire des projets","الخطط"],["Problèmes pratiques","المشكلات اليومية"],["Révision générale","مراجعة عامة"],["Expressions utiles","عبارات مفيدة"],["Dialogues libres","حوارات حرة"]];
+const phrases=[
+["السلام عليكم، كيف حالك؟","As-salāmu ʿalaykum, comment vas-tu ?","Salutations"],
+["أنا بخير، الحمد لله. وأنت؟","Je vais bien, alhamdulillah. Et toi ?","Salutations"],
+["ما اسمك؟","Comment t’appelles-tu ?","Se présenter"],
+["اسمي أحمد، وأنا من السنغال.","Je m’appelle Ahmad et je viens du Sénégal.","Se présenter"],
+["أين تسكن؟","Où habites-tu ?","La ville"],
+["ماذا تعمل؟","Que fais-tu comme travail ?","Le travail"],
+["ماذا تريد أن تشتري؟","Qu’est-ce que tu veux acheter ?","Les achats"],
+["كم ثمن هذا؟","Combien coûte ceci ?","Le marché"],
+["أريد كوبًا من الماء، من فضلك.","Je voudrais un verre d’eau, s’il vous plaît.","Le restaurant"],
+["متى ستسافر؟","Quand vas-tu voyager ?","Le voyage"],
+["أحب أن أتعلم العربية كل يوم.","J’aime apprendre l’arabe chaque jour.","Les études"],
+["هل يمكنك أن تساعدني؟","Peux-tu m’aider ?","Les services"],
+["لا أفهم، هل يمكنك أن تكرر؟","Je ne comprends pas, peux-tu répéter ?","La conversation"],
+["ماذا تعني هذه الكلمة؟","Que signifie ce mot ?","Expressions utiles"],
+["أين أقرب مسجد؟","Où est la mosquée la plus proche ?","La mosquée"],
+["أريد أن أحجز غرفة في الفندق.","Je veux réserver une chambre à l’hôtel.","L’hôtel"],
+["كيف أذهب إلى المطار؟","Comment aller à l’aéroport ?","L’aéroport"],
+["ما رأيك في هذا الموضوع؟","Que penses-tu de ce sujet ?","Donner son opinion"],
+["سأتصل بك غدًا إن شاء الله.","Je t’appellerai demain, si Dieu le veut.","Le téléphone"]];
+let data=JSON.parse(localStorage.getItem(KEY)||"null")||{level:"beginner",dialect:"MSA",theme:"Salutations",messages:[],review:[],learned:0};
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#039;"}[c]))}
+function toast(s){let x=document.getElementById("toast");x.textContent=s;x.style.display="block";setTimeout(()=>x.style.display="none",1800)}
+function nav(p){document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.getElementById("n-"+p)?.classList.add("active")}
+function show(p){nav(p);let a=document.getElementById("app");if(p=="home")home(a);else if(p=="tutor")tutor(a);else if(p=="themes")themePage(a);else if(p=="review")review(a);else settings(a)}
+function home(a){a.innerHTML=`<section class="hero"><h1>Apprendre l’arabe en parlant</h1><p class="rtl" style="text-align:right">تعلّم العربية بالمحادثة</p><p>Pratique l’arabe avec des phrases, des thèmes, de l’audio et des révisions.</p><button onclick="show('tutor')">💬 Commencer</button></section><div class="grid"><div class="card"><b>Niveau</b><h2>${esc(data.level)}</h2></div><div class="card"><b>Dialecte</b><h2>${esc(data.dialect)}</h2></div><div class="card"><b>Phrases</b><h2>${data.learned}</h2><small>ajoutées à la révision</small></div></div><div class="card"><h3>Ce que tu peux faire</h3><p>💬 Dialoguer · 📚 52 thèmes · 🔊 Écouter · 🎙️ Parler · 🧠 Réviser · 💾 Sauvegarder</p></div>`}
+function tutor(a){let ms=data.messages.map(m=>`<div class="msg ${m.who}">${m.who=="tutor"?"<b>المعلّم</b>":""}${m.ar?`<div class="rtl">${esc(m.ar)}</div>`:""}${m.fr?`<div>${esc(m.fr)}</div>`:""}</div>`).join("");if(!ms)ms=`<div class="msg tutor"><b>المعلّم</b><div class="rtl">السلام عليكم! كيف حالك اليوم؟</div><div>Bonjour ! Comment vas-tu aujourd’hui ?</div></div>`;a.innerHTML=`<div class="card"><span class="pill">${esc(data.level)}</span> <span class="pill">${esc(data.dialect)}</span> <span class="pill">${esc(data.theme)}</span></div><div class="chat">${ms}</div><div class="card"><label>Ta réponse</label><textarea id="txt" rows="3" placeholder="Écris en arabe, français ou translittération..."></textarea><div class="row" style="margin-top:8px"><button onclick="send()">Envoyer</button><button class="secondary" onclick="randomPhrase()">💡 Phrase</button><button class="ghost" onclick="listen()">🎙️ Parler</button></div></div>`}
+function send(){let x=document.getElementById("txt"),v=x.value.trim();if(!v)return;data.messages.push({who:"me",fr:v});let l=v.toLowerCase(),ar="ممتاز! حاول أن تقول جملة أخرى بالعربية. ما رأيك؟",fr="Excellent ! Essaie de dire une autre phrase en arabe. Qu’en penses-tu ?";if(l.includes("bonjour")||l.includes("salut")){ar="وعليكم السلام! أنا بخير، الحمد لله. كيف حالك؟";fr="Wa alaykum as-salam ! Je vais bien, alhamdulillah. Comment vas-tu ?"}else if(l.includes("merci")){ar="على الرحب والسعة! هل تريد أن نتدرّب على جملة جديدة؟";fr="Avec plaisir ! Veux-tu pratiquer une nouvelle phrase ?"}else if(l.includes("famille")){ar="جميل! تحدّث لي عن عائلتك. كم شخصًا في عائلتك؟";fr="Très bien ! Parle-moi de ta famille. Combien de personnes y a-t-il dans ta famille ?"}data.messages.push({who:"tutor",ar,fr});save();tutor(document.getElementById("app"))}
+function randomPhrase(){let p=phrases[Math.floor(Math.random()*phrases.length)];data.review.unshift({ar:p[0],fr:p[1],theme:p[2]});data.learned++;save();review(document.getElementById("app"));toast("Phrase ajoutée")}
+function speak(t){if(!window.speechSynthesis)return toast("Audio indisponible");let u=new SpeechSynthesisUtterance(t);u.lang=data.dialect=="Darija"?"ar-MA":data.dialect=="Egyptian"?"ar-EG":"ar-SA";speechSynthesis.cancel();speechSynthesis.speak(u)}
+function listen(){let R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return toast("Reconnaissance vocale indisponible");let r=new R();r.lang="ar-SA";r.onresult=e=>document.getElementById("txt").value=e.results[0][0].transcript;r.onerror=()=>toast("Microphone indisponible");r.start()}
+function themePage(a){a.innerHTML=`<section class="hero"><h1>📚 Thèmes</h1><p>Choisis un sujet de conversation.</p></section><div class="grid">${themes.map((t,i)=>`<div class="card theme" onclick="chooseTheme(${i})"><b>${esc(t[0])}</b><div class="rtl" style="font-size:19px">${esc(t[1])}</div></div>`).join("")}</div>`}
+function chooseTheme(i){data.theme=themes[i][0];save();show("tutor");toast("Thème sélectionné")}
+function review(a){let r=data.review||[];a.innerHTML=`<section class="hero"><h1>🧠 Révision</h1><p>Répète les phrases que tu veux retenir.</p></section>${r.length?r.map((p,i)=>`<div class="card"><div class="rtl">${esc(p.ar)}</div><p>${esc(p.fr)}</p><small>${esc(p.theme)}</small><div class="row" style="margin-top:8px"><button onclick="speak(${JSON.stringify(p.ar)})">🔊 Écouter</button><button class="secondary" onclick="known(${i})">✓ Je connais</button></div></div>`).join(""):`<div class="card"><h3>Aucune phrase</h3><p class="muted">Dans le Tuteur, appuie sur 💡 Phrase.</p></div>`}`}
+function known(i){data.review.splice(i,1);save();review(document.getElementById("app"))}
+function settings(a){a.innerHTML=`<section class="hero"><h1>⚙️ Réglages</h1><p>Personnalise ton apprentissage.</p></section><div class="card"><label>Niveau</label><select id="level"><option value="beginner">Débutant</option><option value="intermediate">Intermédiaire</option><option value="advanced">Avancé</option></select><label>Dialecte</label><select id="dialect"><option value="MSA">Arabe standard</option><option value="Darija">Darija marocaine</option><option value="Egyptian">Arabe égyptien</option></select><br><br><button onclick="applySettings()">Enregistrer</button></div><div class="card"><h3>💾 Sauvegarde</h3><p class="muted">Les données sont enregistrées sur ton appareil.</p><button class="secondary" onclick="exportData()">Exporter JSON</button> <label class="btn ghost" style="display:inline-block">Importer<input type="file" accept=".json" hidden onchange="importData(event)"></label><br><br><button style="background:#fee2e2;color:#b42318" onclick="resetData()">Réinitialiser</button></div><div class="card"><b>Lisaan Ahmad — لِسَان أَحْمَد</b><p class="muted">Version autonome, sans compte ni serveur.</p></div>`;document.getElementById("level").value=data.level;document.getElementById("dialect").value=data.dialect}
+function applySettings(){data.level=document.getElementById("level").value;data.dialect=document.getElementById("dialect").value;save();show("home");toast("Réglages enregistrés")}
+function exportData(){let b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="lisaan-ahmad-backup.json";a.click();URL.revokeObjectURL(u)}
+function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);save();show("home");toast("Import réussi")}catch(e){toast("Fichier invalide")}};r.readAsText(f)}
+function resetData(){if(confirm("Supprimer toutes les données locales ?")){localStorage.removeItem(KEY);location.reload()}}
+show("home");
+</script>
+</body></html>
